@@ -1,0 +1,48 @@
+[build-system]
+requires = [
+    "setuptools < 70.0.0",
+    "torch",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "TorchOnlyAST"
+authors = [
+    {name = "Takuya Hasumi"},
+]
+description = "Audio spectrogram transformer that depends only on PyTorch."
+readme = "README.md"
+license = {file = "LICENSE"}
+urls = {url = "https://github.com/tky823/TorchOnlyAST"}
+requires-python = ">=3.8, <4"
+dependencies = [
+    "torch",
+]
+dynamic = [
+    "version",
+]
+
+[project.optional-dependencies]
+dev = [
+    "flake8",
+    "black",
+    "isort"
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "torch_only_ast.__version__"}
+
+[tool.setuptools.packages.find]
+include = [
+    "torch_only_ast",
+]
+
+[tool.black]
+line-length = 99
+
+[tools.flake8]
+max-line-length = 99
+
+[tool.isort]
+profile = "black"
+line_length = 99
