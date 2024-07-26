@@ -16,6 +16,8 @@ license = {file = "LICENSE"}
 urls = {url = "https://github.com/tky823/TorchOnlyAST"}
 requires-python = ">=3.8, <4"
 dependencies = [
+    "omegaconf",
+    "hydra-core",
     "torch",
 ]
 dynamic = [
