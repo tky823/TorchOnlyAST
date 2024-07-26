@@ -5,12 +5,7 @@ from typing import Tuple
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
-try:
-    from tqdm import tqdm
-
-    IS_TQDM_AVAILABLE = True
-except ImportError:
-    IS_TQDM_AVAILABLE = False
+from tqdm import tqdm
 
 __all__ = ["download_file_from_github_release"]
 
@@ -61,13 +56,10 @@ def download_file_from_github_release(
 
     try:
         with urlopen(request) as response, open(path, "wb") as f:
-            if IS_TQDM_AVAILABLE:
-                description = f"Download file to {path}"
+            description = f"Download file to {path}"
 
-                with tqdm(unit="B", unit_scale=True, desc=description, total=total_size) as pbar:
-                    _download(response, f, chunk_size=chunk_size, pbar=pbar)
-            else:
-                _download(response, f, chunk_size=chunk_size)
+            with tqdm(unit="B", unit_scale=True, desc=description, total=total_size) as pbar:
+                _download(response, f, chunk_size=chunk_size, pbar=pbar)
     except Exception as e:
         raise e
 
