@@ -20,7 +20,8 @@ pip install git+https://github.com/tky823/TorchOnlyAST.git
 >>> model = AudioSpectrogramTransformer.build_from_pretrained("ast-base-stride10")
 >>> input = torch.randn((batch_size, n_bins, n_frames))
 >>> output = model(input)
->>> print(output)
+>>> print(output.size())
+torch.Size([4, 527])
 ```
 
 ### Patchout fast spectrogram transformer (PaSST)
@@ -33,5 +34,6 @@ pip install git+https://github.com/tky823/TorchOnlyAST.git
 >>> model = PaSST.build_from_pretrained("passt-base-stride10-struct-ap0.476-swa")
 >>> input = torch.randn((batch_size, n_bins, n_frames))
 >>> output = model(input)
->>> print(output)
+>>> print(output.size())
+torch.Size([4, 527])
 ```
