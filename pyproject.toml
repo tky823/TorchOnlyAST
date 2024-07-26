@@ -18,6 +18,7 @@ requires-python = ">=3.8, <4"
 dependencies = [
     "omegaconf",
     "hydra-core",
+    "tqdm",
     "torch",
 ]
 dynamic = [
