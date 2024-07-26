@@ -1,8 +1,11 @@
 import os
 
+from .hydra.utils import instantiate
+
 __all__ = [
     "cache_dir",
     "model_cache_dir",
+    "instantiate",
 ]
 
 
