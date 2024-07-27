@@ -18,10 +18,45 @@ pip install git+https://github.com/tky823/TorchOnlyAST.git
 >>> torch.manual_seed(0)
 >>> batch_size, n_bins, n_frames = 4, 128, 50
 >>> model = AudioSpectrogramTransformer.build_from_pretrained("ast-base-stride10")
+>>> print(model)
+AudioSpectrogramTransformer(
+  (embedding): PositionalPatchEmbedding(
+    (conv2d): Conv2d(1, 768, kernel_size=(16, 16), stride=(10, 10))
+    (dropout): Dropout(p=0, inplace=False)
+  )
+  (backbone): TransformerEncoder(
+    (layers): ModuleList(
+      (0-11): 12 x TransformerEncoderLayer(
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+        )
+        (linear1): Linear(in_features=768, out_features=3072, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=3072, out_features=768, bias=True)
+        (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+        (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (activation): GELU(approximate='none')
+      )
+    )
+    (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+  )
+  (aggregator): HeadTokensAggregator()
+  (head): MLPHead(
+    (norm): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+    (linear): Linear(in_features=768, out_features=527, bias=True)
+  )
+)
 >>> input = torch.randn((batch_size, n_bins, n_frames))
 >>> output = model(input)
 >>> print(output.size())
 torch.Size([4, 527])
+# remove pretrained head
+>>> model.head = None
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 768])
 ```
 
 ### Patchout fast spectrogram transformer (PaSST)
@@ -32,10 +67,46 @@ torch.Size([4, 527])
 >>> torch.manual_seed(0)
 >>> batch_size, n_bins, n_frames = 4, 128, 50
 >>> model = PaSST.build_from_pretrained("passt-base-stride10-struct-ap0.476-swa")
+>>> print(model)
+PaSST(
+  (embedding): DisentangledPositionalPatchEmbedding(
+    (conv2d): Conv2d(1, 768, kernel_size=(16, 16), stride=(10, 10))
+    (dropout): Dropout(p=0, inplace=False)
+  )
+  (dropout): StructuredPatchout()
+  (backbone): TransformerEncoder(
+    (layers): ModuleList(
+      (0-11): 12 x TransformerEncoderLayer(
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+        )
+        (linear1): Linear(in_features=768, out_features=3072, bias=True)
+        (dropout): Dropout(p=0, inplace=False)
+        (linear2): Linear(in_features=3072, out_features=768, bias=True)
+        (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+        (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+        (dropout1): Dropout(p=0, inplace=False)
+        (dropout2): Dropout(p=0, inplace=False)
+        (activation): GELU(approximate='none')
+      )
+    )
+    (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+  )
+  (aggregator): HeadTokensAggregator()
+  (head): MLPHead(
+    (norm): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+    (linear): Linear(in_features=768, out_features=527, bias=True)
+  )
+)
 >>> input = torch.randn((batch_size, n_bins, n_frames))
 >>> output = model(input)
 >>> print(output.size())
 torch.Size([4, 527])
+# remove pretrained head
+>>> model.head = None
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 768])
 ```
 
 ## License
