@@ -14,7 +14,7 @@ pip install git+https://github.com/tky823/TorchOnlyAST.git
 
 ```python
 >>> import torch
->>> from torch_only_ast.models.ast import AudioSpectrogramTransformer
+>>> from torch_only_ast.models.ast import AudioSpectrogramTransformer, MLPHead
 >>> torch.manual_seed(0)
 >>> batch_size, n_bins, n_frames = 4, 128, 50
 >>> model = AudioSpectrogramTransformer.build_from_pretrained("ast-base-stride10")
@@ -52,11 +52,24 @@ AudioSpectrogramTransformer(
 >>> output = model(input)
 >>> print(output.size())
 torch.Size([4, 527])
-# remove pretrained head
+>>> # remove pretrained head
 >>> model.head = None
 >>> output = model(input)
 >>> print(output.size())
 torch.Size([4, 768])
+>>> # set customized head to model
+>>> embedding_dim = model.embedding.embedding_dim
+>>> num_classes = 50
+>>> head = MLPHead(embedding_dim, num_classes)
+>>> model.head = head
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 50])
+>>> # or set customized head to build_from_pretrained
+>>> model = AudioSpectrogramTransformer.build_from_pretrained("ast-base-stride10", head=head)
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 50])
 ```
 
 ### Patchout fast spectrogram transformer (PaSST)
@@ -64,6 +77,7 @@ torch.Size([4, 768])
 ```python
 >>> import torch
 >>> from torch_only_ast.models.passt import PaSST
+>>> from torch_only_ast.models.ast import MLPHead
 >>> torch.manual_seed(0)
 >>> batch_size, n_bins, n_frames = 4, 128, 50
 >>> model = PaSST.build_from_pretrained("passt-base-stride10-struct-ap0.476-swa")
@@ -102,11 +116,24 @@ PaSST(
 >>> output = model(input)
 >>> print(output.size())
 torch.Size([4, 527])
-# remove pretrained head
+>>> # remove pretrained head
 >>> model.head = None
 >>> output = model(input)
 >>> print(output.size())
 torch.Size([4, 768])
+>>> # set customized head to model
+>>> embedding_dim = model.embedding.embedding_dim
+>>> num_classes = 50
+>>> head = MLPHead(embedding_dim, num_classes)
+>>> model.head = head
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 50])
+>>> # or set customized head to build_from_pretrained
+>>> model = PaSST.build_from_pretrained("passt-base-stride10-struct-ap0.476-swa", head=head)
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 50])
 ```
 
 ## License
