@@ -70,6 +70,12 @@ torch.Size([4, 50])
 >>> output = model(input)
 >>> print(output.size())
 torch.Size([4, 50])
+>>> # remove aggregator and pretrained head
+>>> model.aggregator = None
+>>> model.head = None
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 50, 768])
 ```
 
 ### Patchout fast spectrogram transformer (PaSST)
@@ -134,6 +140,16 @@ torch.Size([4, 50])
 >>> output = model(input)
 >>> print(output.size())
 torch.Size([4, 50])
+>>> # remove aggregator and pretrained head
+>>> model.aggregator = None
+>>> model.head = None
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 2, 768])  # Patchout is applied during training.
+>>> model.eval()
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 50, 768])  # Patchout is not applied during evaluation.
 ```
 
 ## License
