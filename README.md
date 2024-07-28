@@ -16,7 +16,7 @@ pip install git+https://github.com/tky823/TorchOnlyAST.git
 >>> import torch
 >>> from torch_only_ast.models.ast import AudioSpectrogramTransformer, MLPHead
 >>> torch.manual_seed(0)
->>> batch_size, n_bins, n_frames = 4, 128, 50
+>>> batch_size, n_bins, n_frames = 4, 128, 512
 >>> model = AudioSpectrogramTransformer.build_from_pretrained("ast-base-stride10")
 >>> print(model)
 AudioSpectrogramTransformer(
@@ -75,7 +75,7 @@ torch.Size([4, 50])
 >>> model.head = None
 >>> output = model(input)
 >>> print(output.size())
-torch.Size([4, 50, 768])
+torch.Size([4, 602, 768])  # 1 [CLS], 1 [DIST], and 600 frames
 ```
 
 ### Patchout fast spectrogram transformer (PaSST)
@@ -85,7 +85,7 @@ torch.Size([4, 50, 768])
 >>> from torch_only_ast.models.passt import PaSST
 >>> from torch_only_ast.models.ast import MLPHead
 >>> torch.manual_seed(0)
->>> batch_size, n_bins, n_frames = 4, 128, 50
+>>> batch_size, n_bins, n_frames = 4, 128, 512
 >>> model = PaSST.build_from_pretrained("passt-base-stride10-struct-ap0.476-swa")
 >>> print(model)
 PaSST(
@@ -93,7 +93,7 @@ PaSST(
     (conv2d): Conv2d(1, 768, kernel_size=(16, 16), stride=(10, 10))
     (dropout): Dropout(p=0, inplace=False)
   )
-  (dropout): StructuredPatchout()
+  (dropout): StructuredPatchout(frequency_drops=4, time_drops=40)
   (backbone): TransformerEncoder(
     (layers): ModuleList(
       (0-11): 12 x TransformerEncoderLayer(
@@ -145,11 +145,11 @@ torch.Size([4, 50])
 >>> model.head = None
 >>> output = model(input)
 >>> print(output.size())
-torch.Size([4, 2, 768])  # Patchout is applied during training.
+torch.Size([4, 82, 768])  # Patchout is applied during training.
 >>> model.eval()
 >>> output = model(input)
 >>> print(output.size())
-torch.Size([4, 50, 768])  # Patchout is not applied during evaluation.
+torch.Size([4, 602, 768])  # Patchout is not applied during evaluation.
 ```
 
 ## License
