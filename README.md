@@ -14,12 +14,12 @@ pip install git+https://github.com/tky823/TorchOnlyAST.git
 
 ```python
 >>> import torch
->>> from torch_only_ast.models.ast import AudioSpectrogramTransformer, MLPHead
+>>> from torch_only_ast.models.ast import AST, MLPHead
 >>> torch.manual_seed(0)
 >>> batch_size, n_bins, n_frames = 4, 128, 512
->>> model = AudioSpectrogramTransformer.build_from_pretrained("ast-base-stride10")
+>>> model = AST.build_from_pretrained("ast-base-stride10")
 >>> print(model)
-AudioSpectrogramTransformer(
+AST(
   (embedding): PositionalPatchEmbedding(
     (conv2d): Conv2d(1, 768, kernel_size=(16, 16), stride=(10, 10))
     (dropout): Dropout(p=0, inplace=False)
