@@ -66,7 +66,7 @@ torch.Size([4, 768])
 >>> print(output.size())
 torch.Size([4, 50])
 >>> # or set customized head to build_from_pretrained
->>> model = AudioSpectrogramTransformer.build_from_pretrained("ast-base-stride10", head=head)
+>>> model = AST.build_from_pretrained("ast-base-stride10", head=head)
 >>> output = model(input)
 >>> print(output.size())
 torch.Size([4, 50])
