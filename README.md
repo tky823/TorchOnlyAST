@@ -135,7 +135,7 @@ torch.Size([4, 50])
 torch.Size([4, 50])
 ```
 
-- Patch-based SSAST
+- Frame-based SSAST
 
 ```python
 >>> import torch
