@@ -75,7 +75,119 @@ torch.Size([4, 50])
 >>> model.head = None
 >>> output = model(input)
 >>> print(output.size())
-torch.Size([4, 602, 768])  # 1 [CLS], 1 [DIST], and 600 frames
+torch.Size([4, 602, 768])  # 1 [CLS], 1 [DIST], and 600 patches
+```
+
+### Self-supervised audio spectrogram transformer (SSAST)
+
+- Patch-based SSAST
+
+```python
+>>> import torch
+>>> from torch_only_ast.models.ssast import SSAST
+>>> from torch_only_ast.models.ast import HeadTokensAggregator, MLPHead
+>>> torch.manual_seed(0)
+>>> batch_size, n_bins, n_frames = 4, 128, 512
+>>> model = SSAST.build_from_pretrained("multitask-ssast-patch-base-400")
+>>> print(model)
+SSAST(
+  (embedding): PositionalPatchEmbedding(
+    (conv2d): Conv2d(1, 768, kernel_size=(16, 16), stride=(16, 16))
+    (dropout): Dropout(p=0, inplace=False)
+  )
+  (backbone): TransformerEncoder(
+    (layers): ModuleList(
+      (0-11): 12 x TransformerEncoderLayer(
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+        )
+        (linear1): Linear(in_features=768, out_features=3072, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=3072, out_features=768, bias=True)
+        (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+        (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (activation): GELU(approximate='none')
+      )
+    )
+    (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+  )
+)
+>>> input = torch.randn((batch_size, n_bins, n_frames))
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 258, 768])  # 1 [CLS], 1 [DIST], and 256 patches
+>>> # set customized aggregator and head to model
+>>> embedding_dim = model.embedding.embedding_dim
+>>> num_classes = 50
+>>> aggregator = HeadTokensAggregator(insert_cls_token=True, insert_dist_token=True)
+>>> head = MLPHead(embedding_dim, num_classes)
+>>> model.aggregator = aggregator
+>>> model.head = head
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 50])
+>>> # or set customized aggregator and head to build_from_pretrained
+>>> model = SSAST.build_from_pretrained("multitask-ssast-patch-base-400", aggregator=aggregator, head=head)
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 50])
+```
+
+- Patch-based SSAST
+
+```python
+>>> import torch
+>>> from torch_only_ast.models.ssast import SSAST
+>>> from torch_only_ast.models.ast import HeadTokensAggregator, MLPHead
+>>> torch.manual_seed(0)
+>>> batch_size, n_bins, n_frames = 4, 128, 512
+>>> model = SSAST.build_from_pretrained("multitask-ssast-frame-base-400")
+>>> print(model)
+SSAST(
+  (embedding): PositionalPatchEmbedding(
+    (conv2d): Conv2d(1, 768, kernel_size=(128, 2), stride=(128, 2))
+    (dropout): Dropout(p=0, inplace=False)
+  )
+  (backbone): TransformerEncoder(
+    (layers): ModuleList(
+      (0-11): 12 x TransformerEncoderLayer(
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+        )
+        (linear1): Linear(in_features=768, out_features=3072, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=3072, out_features=768, bias=True)
+        (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+        (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (activation): GELU(approximate='none')
+      )
+    )
+    (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+  )
+)
+>>> input = torch.randn((batch_size, n_bins, n_frames))
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 258, 768])
+>>> # set customized aggregator and head to model
+>>> embedding_dim = model.embedding.embedding_dim
+>>> num_classes = 50
+>>> aggregator = HeadTokensAggregator(insert_cls_token=True, insert_dist_token=True)
+>>> head = MLPHead(embedding_dim, num_classes)
+>>> model.aggregator = aggregator
+>>> model.head = head
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 50])
+>>> # or set customized aggregator and head to build_from_pretrained
+>>> model = SSAST.build_from_pretrained("multitask-ssast-frame-base-400", aggregator=aggregator, head=head)
+>>> output = model(input)
+>>> print(output.size())
+torch.Size([4, 50])
 ```
 
 ### Patchout fast spectrogram transformer (PaSST)
