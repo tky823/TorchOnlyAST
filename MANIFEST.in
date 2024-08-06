@@ -1,0 +1,3 @@
+exclude .gitignore
+recursive-include torch_only_ast *.py
+prune .github
