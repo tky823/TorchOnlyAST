@@ -20,6 +20,7 @@ dependencies = [
     "hydra-core",
     "tqdm",
     "torch",
+    "torchaudio",
 ]
 dynamic = [
     "version",
