@@ -11,7 +11,12 @@ from torch.nn.common_types import _size_2_t
 
 from ..modules.vit import PositionalPatchEmbedding
 from ..utils.github import download_file_from_github_release
-from .ast import Aggregator, BaseAudioSpectrogramTransformer, Head, _align_patch_embedding
+from .ast import (
+    Aggregator,
+    BaseAudioSpectrogramTransformer,
+    Head,
+    _align_patch_embedding,
+)
 
 __all__ = [
     "SelfSupervisedAudioSpectrogramTransformerMaskedPatchModel",
@@ -28,9 +33,9 @@ class SelfSupervisedAudioSpectrogramTransformerMaskedPatchModel(BaseAudioSpectro
     """Masked patch model for self-supervised audio spectrogram transformer.
 
     Args:
-        embedding (audyn.modules.vit.PositionalPatchEmbedding): Patch embedding
+        embedding (torch_only_ast.modules.vit.PositionalPatchEmbedding): Patch embedding
             followed by positional embedding.
-        masker (audyn.models.ssast.Masker): Masking module that replaces some patches
+        masker (torch_only_ast.models.ssast.Masker): Masking module that replaces some patches
             with mask tokens.
         backbone (nn.TransformerEncoder): Transformer (encoder).
 
@@ -124,7 +129,7 @@ class SelfSupervisedAudioSpectrogramTransformer(BaseAudioSpectrogramTransformer)
     """Self-supervised audio spectrogram transformer.
 
     Args:
-        embedding (audyn.modules.vit.PositionalPatchEmbedding): Patch embedding
+        embedding (torch_only_ast.modules.vit.PositionalPatchEmbedding): Patch embedding
             followed by positional embedding.
         backbone (nn.TransformerEncoder): Transformer (encoder).
 
@@ -169,7 +174,7 @@ class SelfSupervisedAudioSpectrogramTransformer(BaseAudioSpectrogramTransformer)
 
         Examples:
 
-            >>> from audyn.models.ssast import SelfSupervisedAudioSpectrogramTransformer
+            >>> from torch_only_ast.models.ssast import SelfSupervisedAudioSpectrogramTransformer
             >>> model = SelfSupervisedAudioSpectrogramTransformer.build_from_pretrained("multitask-ssast-frame-base-400")
 
         .. note::
@@ -287,9 +292,9 @@ class MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel(
     that processes reconstruction and classification.
 
     Args:
-        embedding (audyn.modules.vit.PositionalPatchEmbedding): Patch embedding
+        embedding (torch_only_ast.modules.vit.PositionalPatchEmbedding): Patch embedding
             followed by positional embedding.
-        masker (audyn.models.ssast.Masker): Masking module that replaces some patches
+        masker (torch_only_ast.models.ssast.Masker): Masking module that replaces some patches
             with mask tokens.
         backbone (nn.TransformerEncoder): Transformer (encoder).
         reconstructor (nn.Module): Position-wise reconstructor.
@@ -327,7 +332,7 @@ class MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel(
 
         Examples:
 
-            >>> from audyn.models.ssast import MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel
+            >>> from torch_only_ast.models.ssast import MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel
             >>> model = MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel.build_from_pretrained("multitask-ssast-frame-base-400")
 
         .. note::
