@@ -78,7 +78,113 @@ torch.Size([4, 50])
 torch.Size([4, 602, 768])  # 1 [CLS], 1 [DIST], and 600 patches
 ```
 
-### Self-supervised audio spectrogram transformer (SSAST)
+### Self-supervised audio spectrogram transformer (SSAST) for (continual) pretraining
+
+- Patch-based SSAST
+
+```python
+>>> import torch
+>>> from torch_only_ast.models.ssast import MultiTaskSSASTMPM
+>>> torch.manual_seed(0)
+>>> batch_size, n_bins, n_frames = 4, 128, 1024
+>>> model = MultiTaskSSASTMPM.build_from_pretrained("multitask-ssast-patch-base-400")
+>>> print(model)
+MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel(
+  (embedding): PositionalPatchEmbedding(
+    (conv2d): Conv2d(1, 768, kernel_size=(16, 16), stride=(16, 16))
+    (dropout): Dropout(p=0, inplace=False)
+  )
+  (masker): Masker()
+  (backbone): TransformerEncoder(
+    (layers): ModuleList(
+      (0-11): 12 x TransformerEncoderLayer(
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+        )
+        (linear1): Linear(in_features=768, out_features=3072, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=3072, out_features=768, bias=True)
+        (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+        (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (activation): GELU(approximate='none')
+      )
+    )
+    (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+  )
+  (reconstructor): MLP(
+    (linear1): Linear(in_features=768, out_features=768, bias=True)
+    (nonlinear): ReLU()
+    (linear2): Linear(in_features=768, out_features=256, bias=True)
+  )
+  (classifier): MLP(
+    (linear1): Linear(in_features=768, out_features=768, bias=True)
+    (nonlinear): ReLU()
+    (linear2): Linear(in_features=768, out_features=256, bias=True)
+  )
+)
+>>> input = torch.randn((batch_size, n_bins, n_frames))
+>>> reconstruction, classification = model(input)
+>>> reconstruction_output, reconstruction_target, reconstruction_length = reconstruction
+>>> classification_output, classification_target, classification_length = classification
+>>> print(reconstruction_output.size(), reconstruction_target.size(), reconstruction_length.size())
+torch.Size([4, 400, 256]) torch.Size([4, 400, 256]) torch.Size([4])  # 400 tokens are masked.
+```
+
+- Frame-based SSAST
+
+```python
+>>> import torch
+>>> from torch_only_ast.models.ssast import MultiTaskSSASTMPM
+>>> torch.manual_seed(0)
+>>> batch_size, n_bins, n_frames = 4, 128, 1024
+>>> model = MultiTaskSSASTMPM.build_from_pretrained("multitask-ssast-frame-base-400")
+>>> print(model)
+MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel(
+  (embedding): PositionalPatchEmbedding(
+    (conv2d): Conv2d(1, 768, kernel_size=(128, 2), stride=(128, 2))
+    (dropout): Dropout(p=0, inplace=False)
+  )
+  (masker): Masker()
+  (backbone): TransformerEncoder(
+    (layers): ModuleList(
+      (0-11): 12 x TransformerEncoderLayer(
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+        )
+        (linear1): Linear(in_features=768, out_features=3072, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=3072, out_features=768, bias=True)
+        (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+        (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (activation): GELU(approximate='none')
+      )
+    )
+    (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+  )
+  (reconstructor): MLP(
+    (linear1): Linear(in_features=768, out_features=768, bias=True)
+    (nonlinear): ReLU()
+    (linear2): Linear(in_features=768, out_features=256, bias=True)
+  )
+  (classifier): MLP(
+    (linear1): Linear(in_features=768, out_features=768, bias=True)
+    (nonlinear): ReLU()
+    (linear2): Linear(in_features=768, out_features=256, bias=True)
+  )
+)
+>>> input = torch.randn((batch_size, n_bins, n_frames))
+>>> reconstruction, classification = model(input)
+>>> reconstruction_output, reconstruction_target, reconstruction_length = reconstruction
+>>> classification_output, classification_target, classification_length = classification
+>>> print(reconstruction_output.size(), reconstruction_target.size(), reconstruction_length.size())
+torch.Size([4, 400, 256]) torch.Size([4, 400, 256]) torch.Size([4])
+```
+
+### SSAST for finetuning
 
 - Patch-based SSAST
 
