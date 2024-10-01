@@ -304,7 +304,7 @@ class MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel(
 
     def __init__(
         self,
-        embedding: "PositionalPatchEmbedding",
+        embedding: PositionalPatchEmbedding,
         masker: "Masker",
         backbone: nn.TransformerEncoder,
         reconstructor: nn.Module,
