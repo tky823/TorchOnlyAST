@@ -111,8 +111,8 @@ class _PatchEmbedding(nn.Module):
 
         return output
 
-    def insert_head_tokens(self, sequence: torch.Tensor) -> torch.Tensor:
-        """Insert [CLS] and [DIST] tokens to sequence.
+    def prepend_head_tokens(self, sequence: torch.Tensor) -> torch.Tensor:
+        """Prepend [CLS] and [DIST] tokens to sequence.
 
         Args:
             sequence (torch.Tensor): Sequence of shape (batch_size, height * width, embedding_dim).
@@ -280,7 +280,7 @@ class PositionalPatchEmbedding(_PatchEmbedding):
             n_frames,
         )
         x = self.patches_to_sequence(x)
-        x = self.insert_head_tokens(x)
+        x = self.prepend_head_tokens(x)
         output = self.dropout(x)
 
         return output
@@ -467,7 +467,7 @@ class PatchEmbedding(_PatchEmbedding):
         """
         x = self.compute_patch_embedding(input)
         x = self.patches_to_sequence(x)
-        x = self.insert_head_tokens(x)
+        x = self.prepend_head_tokens(x)
         output = self.dropout(x)
 
         return output
