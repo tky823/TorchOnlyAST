@@ -130,6 +130,8 @@ MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel(
 >>> classification_output, classification_target, classification_length = classification
 >>> print(reconstruction_output.size(), reconstruction_target.size(), reconstruction_length.size())
 torch.Size([4, 400, 256]) torch.Size([4, 400, 256]) torch.Size([4])  # 400 tokens are masked.
+>>> print(classification_output.size(), classification_target.size(), classification_length.size())
+torch.Size([4, 400, 256]) torch.Size([4, 400, 256]) torch.Size([4])
 ```
 
 - Frame-based SSAST
@@ -181,6 +183,8 @@ MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel(
 >>> reconstruction_output, reconstruction_target, reconstruction_length = reconstruction
 >>> classification_output, classification_target, classification_length = classification
 >>> print(reconstruction_output.size(), reconstruction_target.size(), reconstruction_length.size())
+torch.Size([4, 400, 256]) torch.Size([4, 400, 256]) torch.Size([4])
+>>> print(classification_output.size(), classification_target.size(), classification_length.size())
 torch.Size([4, 400, 256]) torch.Size([4, 400, 256]) torch.Size([4])
 ```
 
