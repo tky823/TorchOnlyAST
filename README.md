@@ -89,7 +89,7 @@ torch.Size([4, 602, 768])  # 1 [CLS], 1 [DIST], and 600 patches
 >>> batch_size, n_bins, n_frames = 4, 128, 1024
 >>> model = MultiTaskSSASTMPM.build_from_pretrained("multitask-ssast-patch-base-400")
 >>> print(model)
-MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel(
+MultiTaskSSASTMPM(
   (embedding): PositionalPatchEmbedding(
     (conv2d): Conv2d(1, 768, kernel_size=(16, 16), stride=(16, 16))
     (dropout): Dropout(p=0, inplace=False)
@@ -143,7 +143,7 @@ torch.Size([4, 400, 256]) torch.Size([4, 400, 256]) torch.Size([4])
 >>> batch_size, n_bins, n_frames = 4, 128, 1024
 >>> model = MultiTaskSSASTMPM.build_from_pretrained("multitask-ssast-frame-base-400")
 >>> print(model)
-MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel(
+MultiTaskSSASTMPM(
   (embedding): PositionalPatchEmbedding(
     (conv2d): Conv2d(1, 768, kernel_size=(128, 2), stride=(128, 2))
     (dropout): Dropout(p=0, inplace=False)

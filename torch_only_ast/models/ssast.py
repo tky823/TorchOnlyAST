@@ -196,7 +196,6 @@ class SelfSupervisedAudioSpectrogramTransformer(BaseAudioSpectrogramTransformer)
             resolved_config = state_dict["resolved_config"]
             resolved_config = OmegaConf.create(resolved_config)
             pretrained_model_config = resolved_config.model
-            pretrained_model_config["_target_"] = f"{cls.__module__}.{cls.__name__}"
             patch_embedding = instantiate(pretrained_model_config.embedding)
             transformer = instantiate(pretrained_model_config.backbone)
 
@@ -353,8 +352,19 @@ class MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel(
             resolved_config = state_dict["resolved_config"]
             resolved_config = OmegaConf.create(resolved_config)
 
-            model: MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel = (
-                instantiate(resolved_config.model)
+            pretrained_model_config = resolved_config.model
+            patch_embedding = instantiate(pretrained_model_config.embedding)
+            masker = instantiate(pretrained_model_config.masker)
+            transformer = instantiate(pretrained_model_config.backbone)
+            _reconstructor = instantiate(pretrained_model_config.reconstructor)
+            _classifier = instantiate(pretrained_model_config.classifier)
+
+            model = cls(
+                patch_embedding,
+                masker,
+                transformer,
+                reconstructor=_reconstructor,
+                classifier=_classifier,
             )
             model.load_state_dict(state_dict["model"])
 
