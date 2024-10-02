@@ -11,12 +11,7 @@ from torch.nn.common_types import _size_2_t
 
 from ..modules.vit import PositionalPatchEmbedding
 from ..utils.github import download_file_from_github_release
-from .ast import (
-    Aggregator,
-    BaseAudioSpectrogramTransformer,
-    Head,
-    _align_patch_embedding,
-)
+from .ast import Aggregator, BaseAudioSpectrogramTransformer, Head, _align_patch_embedding
 
 __all__ = [
     "SelfSupervisedAudioSpectrogramTransformerMaskedPatchModel",
@@ -448,6 +443,7 @@ class MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel(
         x = self.apply_positional_embedding(x, n_bins=n_bins, n_frames=n_frames)
         x = self.patches_to_sequence(x)
         x = self.prepend_head_tokens(x)
+        x = self.dropout_embedding(x)
         x = self.transformer_forward(x, padding_mask=padding_mask)
         _, x = self.split_sequence(x)
         x = self.sequence_to_patches(x, height=height, width=width)
@@ -465,6 +461,7 @@ class MultiTaskSelfSupervisedAudioSpectrogramTransformerMaskedPatchModel(
         x = self.apply_positional_embedding(x, n_bins=n_bins, n_frames=n_frames)
         x = self.patches_to_sequence(x)
         x = self.prepend_head_tokens(x)
+        x = self.dropout_embedding(x)
         x = self.transformer_forward(x, padding_mask=padding_mask)
         _, x = self.split_sequence(x)
         x = self.sequence_to_patches(x, height=height, width=width)

@@ -98,6 +98,20 @@ class BaseAudioSpectrogramTransformer(nn.Module):
 
         return output
 
+    def dropout_embedding(self, input: torch.Tensor) -> torch.Tensor:
+        """Dropout embedding.
+
+        Args:
+            input (torch.Tensor): Sequence of shape (batch_size, height * width + num_head_tokens).
+
+        Returns:
+            torch.Tensor: Sequence of shape (batch_size, height * width + num_head_tokens).
+
+        """
+        output = self.embedding.dropout(input)
+
+        return output
+
     def compute_padding_mask(
         self,
         input: torch.Tensor,
